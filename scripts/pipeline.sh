@@ -46,7 +46,7 @@ if [ ! -f "$INPUT_FILE" ]; then
 fi
 
 # Setup output directories
-WORK_DIR="./processing_${OUTPUT_NAME}"
+WORK_DIR="./results/${OUTPUT_NAME}"
 FRAMES_DIR="${WORK_DIR}/frames"
 TRUNCATED_FILE="${WORK_DIR}/${OUTPUT_NAME}_truncated.mp4"
 SPRITESHEET="${WORK_DIR}/${OUTPUT_NAME}_spritesheet.png"
