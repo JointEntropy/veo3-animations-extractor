@@ -55,6 +55,7 @@ WORK_DIR="./results/${OUTPUT_NAME}"
 FRAMES_DIR="${WORK_DIR}/frames"
 TRUNCATED_FILE="${WORK_DIR}/${OUTPUT_NAME}_truncated.mp4"
 SPRITESHEET="${WORK_DIR}/${OUTPUT_NAME}_spritesheet.png"
+ANIMATION_FILE="${WORK_DIR}/${OUTPUT_NAME}_animation.mp4"
 
 # Remove existing results folder and recreate it
 echo "Cleaning up previous results..."
@@ -143,6 +144,19 @@ ffmpeg -i "${FRAMES_DIR}/frame_%04d.png" \
 
 echo "✓ Spritesheet created: $SPRITESHEET"
 
+# Step 4: Create animation MP4 from frames
+echo "Step 4: Creating animation MP4 at ${FPS} fps..."
+ffmpeg -framerate "$FPS" \
+    -i "${FRAMES_DIR}/frame_%04d.png" \
+    -c:v libx264 \
+    -preset medium \
+    -crf 18 \
+    -pix_fmt yuv420p \
+    "$ANIMATION_FILE" \
+    -y
+
+echo "✓ Animation created: $ANIMATION_FILE"
+
 # Summary
 echo ""
 echo "=========================================="
@@ -152,6 +166,7 @@ echo "Working directory: $WORK_DIR"
 echo "Truncated video:   $TRUNCATED_FILE"
 echo "Frames directory:  $FRAMES_DIR"
 echo "Spritesheet:       $SPRITESHEET"
+echo "Animation MP4:     $ANIMATION_FILE"
 echo ""
 echo "Frames processed:  $FRAME_COUNT"
 echo "Extraction FPS:    $FPS"
