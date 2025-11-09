@@ -17,21 +17,26 @@ START_TIME="$2"
 END_TIME="$3"
 OUTPUT_NAME="${4:-output}"
 CROP_PARAMS="$5"  # Format: "width:height:x:y" or empty for no crop
+FPS="${6:-12}"     # Frames per second for extraction (default: 12)
 
 # Validate input
 if [ -z "$INPUT_FILE" ] || [ -z "$START_TIME" ] || [ -z "$END_TIME" ]; then
-    echo "Usage: $0 <input.mp4> <start_time> <end_time> [output_name] [crop_params]"
+    echo "Usage: $0 <input.mp4> <start_time> <end_time> [output_name] [crop_params] [fps]"
     echo ""
     echo "Examples:"
     echo "  $0 video.mp4 00:00:10 00:00:15 my_animation"
     echo "  $0 video.mp4 00:00:10 00:00:15 my_animation \"800:600:100:50\""
-    echo "  $0 video.mp4 5 10 output \"iw/2:ih/2:iw/4:ih/4\""
+    echo "  $0 video.mp4 00:00:10 00:00:15 my_animation \"800:600:100:50\" 24"
+    echo "  $0 video.mp4 5 10 output \"iw/2:ih/2:iw/4:ih/4\" 8"
     echo ""
     echo "Time format: HH:MM:SS or seconds"
     echo "Crop format: width:height:x:y"
     echo "  - width/height: crop dimensions"
     echo "  - x/y: top-left position"
     echo "  - Can use expressions like 'iw/2' (half input width), 'ih/2' (half input height)"
+    echo "FPS: Frames per second to extract (default: 12)"
+    echo "  - Lower values = fewer frames, smaller spritesheet"
+    echo "  - Common values: 8, 12, 24, 30"
     echo ""
     echo "Common crop examples:"
     echo "  Center square crop: \"iw:iw:(iw-iw)/2:(ih-iw)/2\""
@@ -93,9 +98,9 @@ fi
 echo "✓ Processed video saved to: $TRUNCATED_FILE"
 
 # Step 2: Extract frames as 256x256 PNG files
-echo "Step 2: Extracting frames as 256x256 PNG images..."
+echo "Step 2: Extracting frames at ${FPS} fps as 256x256 PNG images..."
 ffmpeg -i "$TRUNCATED_FILE" \
-    -vf "scale=256:256:force_original_aspect_ratio=decrease,pad=256:256:(ow-iw)/2:(oh-ih)/2" \
+    -vf "fps=${FPS},scale=256:256:force_original_aspect_ratio=decrease,pad=256:256:(ow-iw)/2:(oh-ih)/2" \
     "${FRAMES_DIR}/frame_%04d.png" \
     -y
 
@@ -141,6 +146,7 @@ echo "Frames directory:  $FRAMES_DIR"
 echo "Spritesheet:       $SPRITESHEET"
 echo ""
 echo "Frames processed:  $FRAME_COUNT"
+echo "Extraction FPS:    $FPS"
 echo "Spritesheet grid:  ${FRAMES_PER_ROW}x${FRAMES_PER_COL} (${MAX_FRAMES} frames max)"
 if [ -n "$CROP_PARAMS" ]; then
     echo "Crop applied:      $CROP_PARAMS"

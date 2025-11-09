@@ -7,7 +7,8 @@ OFFSET_Y=218
 WIDTH=605
 HEIGHT=605
 ANIMATION_NAME=JUMP
-./scripts/pipeline.sh examples/input.mp4 00:00:00 00:00:04 $ANIMATION_NAME "$WIDTH:$HEIGHT:$OFFSET_X:$OFFSET_Y"
+FPS=4  # Frames per second for extraction
+./scripts/pipeline.sh examples/input.mp4 00:00:00 00:00:04 $ANIMATION_NAME "$WIDTH:$HEIGHT:$OFFSET_X:$OFFSET_Y" $FPS
 
 
 ### EXTRACT IDLE animation grid cell from media
