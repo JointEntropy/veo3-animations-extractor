@@ -56,8 +56,16 @@ FRAMES_DIR="${WORK_DIR}/frames"
 TRUNCATED_FILE="${WORK_DIR}/${OUTPUT_NAME}_truncated.mp4"
 SPRITESHEET="${WORK_DIR}/${OUTPUT_NAME}_spritesheet.png"
 
+# Remove existing results folder and recreate it
+echo "Cleaning up previous results..."
+if [ -d "$WORK_DIR" ]; then
+    rm -rf "$WORK_DIR"
+    echo "✓ Removed existing directory: $WORK_DIR"
+fi
+
 echo "Creating working directory..."
 mkdir -p "$FRAMES_DIR"
+echo "✓ Created: $WORK_DIR"
 
 # Build video filter chain
 VIDEO_FILTERS=""
